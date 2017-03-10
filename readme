@@ -1,0 +1,79 @@
+
+
+
+GREENDAO INTEGRATION ON ANDROID PROJECT
+
+You can find the integrality of the tutorial on  https://jaimerajkat.wordpress.com/2017/01/10/how-to-integrate-greendao-in-android-project
+
+1- Create an android project with empty activity.
+2- Create a new module ( File -> New -> New Module). 
+	And then, choose Java Library 
+
+
+3- Add on the libs folder of new module, 2 files ( greendao-generator-2.1.0.jar and freemarker-2.3.23.jar)
+	goto https://www.dropbox.com/sh/b2tmi0luavk9e2m/AAAG77htBpjfEO_E6KRYCm8la?dl=0 for files
+
+
+
+4- Add on build.gradle of the module these lines in dependencies
+	- compile files('libs/greendao-generator-2.1.0.jar')
+
+	- compile files('libs/freemarker-2.3.23.jar')
+and sync gradle
+
+5- Add now on the class of the module these lines of code 
+
+private static final int SCHEMA_VERSION = 1;
+private static final String DEFAULT_JAVA_PACKAGE = "tg.myapps.rajkat.greendaointegration.model";
+private static final String DEFAULT_JAVA_PACKAGE_DAO = "tg.myapps.rajkat.greendaointegration.model.dao";
+private static final String DEFAULT_JAVA_PACKAGE_TEST = "tg.myapps.rajkat.greendaointegration.model.test";
+private static final String OUT_DIR = "app/src/main/java";
+/**
+ * Main method
+ * @param args
+ * @throws Exception
+ */
+public static void main(String args[]) throws Exception {
+    Schema schema = new Schema(SCHEMA_VERSION, DEFAULT_JAVA_PACKAGE);
+    schema.setDefaultJavaPackageDao(DEFAULT_JAVA_PACKAGE_DAO);
+    schema.setDefaultJavaPackageTest(DEFAULT_JAVA_PACKAGE_TEST);
+    addPersonEntity(schema);
+    new DaoGenerator().generateAll(schema, OUT_DIR);
+}
+/**
+ * Person entity method
+ * @param schema
+ */
+private static void addPersonEntity(Schema schema){
+    Entity person = schema.addEntity("Person");
+    person.implementsSerializable();
+    person.addIdProperty();
+    person.addStringProperty("firstname");
+    person.addStringProperty("lastname");
+    person.addStringProperty("username");
+}
+These lines would be put in the class of the module. Main method will execute when we run the class. AddPersonEntity is the method to generate person entity by adding attributs like firstname, lastname, …
+  
+
+
+
+
+6- We run the class of the module, it automatically execute the main method
+and create the files on Java package. 
+We can see the result of run successful
+
+
+
+we can also see files created on principal project. It creates package name model and dao automatically. In model package we have dao package and Person class (like we write in the module class). In dao package we have classes (DaoMaster, DaoSession and PersonDao). 
+
+
+
+
+
+
+7- Now, add on the principal android project, in libs folder this file greendao-2.1.0.jar ( find the file here https://www.dropbox.com/sh/b2tmi0luavk9e2m/AAAG77htBpjfEO_E6KRYCm8la?dl=0).
+We can also add in app build.gradle this line
+compile files('libs/greendao-2.1.0.jar')
+and sync gradle project
+
+8- Green DAO integration finished with success
